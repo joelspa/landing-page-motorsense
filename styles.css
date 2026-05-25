@@ -31,8 +31,8 @@
   --glass-bg-strong: rgba(255, 255, 255, 0.12);
   --glass-border: rgba(255, 255, 255, 0.16);
   --glass-border-strong: rgba(255, 255, 255, 0.28);
-  --glass-shine: rgba(255, 255, 255, 0.35);
-  --glass-inset: inset 0 1.5px 0 rgba(255, 255, 255, 0.26), inset 0 -1px 0 rgba(255, 255, 255, 0.06);
+  --glass-shine: rgba(255, 255, 255, 0.48);
+  --glass-inset: inset 0 2px 0 rgba(255, 255, 255, 0.52), inset 0 -1px 0 rgba(255, 255, 255, 0.06), inset 1px 0 0 rgba(255, 255, 255, 0.14), inset -1px 0 0 rgba(255, 255, 255, 0.08);
 
   /* Radios */
   --r-sm: 12px;
@@ -46,7 +46,7 @@
   --font-mono: 'Geist Mono', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
 html, body {
   background: var(--bg-0);
@@ -155,9 +155,10 @@ body {
 .orb {
   position: absolute;
   border-radius: 50%;
-  filter: blur(80px);
+  filter: blur(70px);
   pointer-events: none;
   z-index: 0;
+  /* sin will-change — no animan por JS, evita capas compositor innecesarias */
 }
 
 /* ============================================================
@@ -165,14 +166,13 @@ body {
    ============================================================ */
 .glass {
   background: var(--glass-bg);
-  backdrop-filter: blur(40px) saturate(220%) brightness(1.06);
-  -webkit-backdrop-filter: blur(40px) saturate(220%) brightness(1.06);
+  backdrop-filter: blur(56px) saturate(220%) brightness(1.08);
+  -webkit-backdrop-filter: blur(56px) saturate(220%) brightness(1.08);
   border: 1px solid var(--glass-border);
   box-shadow:
     var(--glass-inset),
     0 24px 60px -20px rgba(0, 0, 0, 0.55),
-    0 8px 20px -8px rgba(0, 0, 0, 0.35),
-    0 0 0 0.5px rgba(255, 255, 255, 0.06) inset;
+    0 8px 20px -8px rgba(0, 0, 0, 0.35);
   border-radius: var(--r-lg);
   position: relative;
   overflow: hidden;
@@ -188,42 +188,68 @@ body {
   box-shadow:
     var(--glass-inset),
     0 36px 90px -20px rgba(37, 99, 235, 0.40),
-    0 16px 40px -10px rgba(0, 0, 0, 0.45),
-    0 0 0 0.5px rgba(255, 255, 255, 0.10) inset;
+    0 16px 40px -10px rgba(0, 0, 0, 0.45);
 }
 
-/* Gradiente interno — simula refracción lateral de la luz */
+/* Touch active states — feedback táctil para móvil */
+@media (hover: none) and (pointer: coarse) {
+  .feature-card:active,
+  .step-card:active,
+  .tech-card:active {
+    transform: scale(0.97) !important;
+    transition: transform 0.08s ease, border-color 0.08s !important;
+    border-color: var(--glass-border-strong);
+  }
+  .btn:active {
+    transform: scale(0.95) !important;
+    transition: transform 0.08s ease !important;
+  }
+  .btn-primary:active {
+    transform: scale(0.95) !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.35),
+      0 4px 14px -4px rgba(99,102,241,0.8) !important;
+  }
+  .scroll-top-btn:active {
+    transform: scale(0.88) !important;
+    transition: transform 0.08s ease !important;
+  }
+  .nav-hamburger:active {
+    transform: scale(0.90);
+    transition: transform 0.08s ease;
+  }
+}
+
+/* Specular highlight system — simula la refracción de luz del liquid glass de Apple */
 .glass::before {
   content: "";
   position: absolute;
   inset: 0;
   border-radius: inherit;
   pointer-events: none;
-  background: linear-gradient(
-    135deg,
-    rgba(255,255,255,0.18) 0%,
-    rgba(255,255,255,0.04) 20%,
-    transparent 45%,
-    rgba(255,255,255,0.02) 75%,
-    rgba(255,255,255,0.07) 100%
-  );
-  animation: glass-shimmer 10s ease-in-out infinite alternate;
-}
-
-@keyframes glass-shimmer {
-  0%   { opacity: 0.7; }
-  50%  { opacity: 1; }
-  100% { opacity: 0.8; }
+  background:
+    /* spot especular primario — esquina superior izquierda (firma Apple) */
+    radial-gradient(ellipse 80% 35% at 15% -5%, rgba(255,255,255,0.42) 0%, transparent 65%),
+    /* reflejo secundario suave — esquina inferior derecha */
+    radial-gradient(ellipse 55% 25% at 88% 108%, rgba(255,255,255,0.08) 0%, transparent 60%),
+    /* sheen diagonal — simula el ángulo del cristal */
+    linear-gradient(145deg,
+      rgba(255,255,255,0.16) 0%,
+      rgba(255,255,255,0.05) 30%,
+      transparent 55%,
+      rgba(255,255,255,0.03) 80%,
+      rgba(255,255,255,0.07) 100%
+    );
 }
 
 .glass-strong {
   background: var(--glass-bg-strong);
-  backdrop-filter: blur(52px) saturate(240%) brightness(1.08);
-  -webkit-backdrop-filter: blur(52px) saturate(240%) brightness(1.08);
+  backdrop-filter: blur(72px) saturate(250%) brightness(1.10);
+  -webkit-backdrop-filter: blur(72px) saturate(250%) brightness(1.10);
   border: 1px solid var(--glass-border-strong);
 }
 
-/* Reflejo de luz — highlight superior más vivo */
+/* Reflejo de luz — highlight iridiscente superior (liquid glass signature) */
 .glass-shine::after {
   content: "";
   position: absolute;
@@ -231,8 +257,12 @@ body {
   border-radius: inherit;
   pointer-events: none;
   background:
-    radial-gradient(150% 55% at 50% -5%, rgba(255,255,255,0.22), transparent 58%),
-    linear-gradient(180deg, rgba(255,255,255,0.07) 0%, transparent 30%);
+    /* corona luminosa centrada en el borde superior */
+    radial-gradient(ellipse 110% 55% at 50% -8%, rgba(255,255,255,0.32) 0%, transparent 62%),
+    /* hot spot izquierdo — simula luz puntual */
+    radial-gradient(ellipse 55% 35% at 15% 0%, rgba(255,255,255,0.28) 0%, transparent 58%),
+    /* gradiente suave horizontal */
+    linear-gradient(180deg, rgba(255,255,255,0.09) 0%, transparent 45%);
 }
 
 /* ============================================================
@@ -247,6 +277,16 @@ body {
 section {
   position: relative;
   padding: 120px 0;
+}
+
+/* Diferir renderizado de secciones lejanas al viewport */
+#safety, #tech, #booth {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 700px;
+}
+footer {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 320px;
 }
 
 /* ============================================================
@@ -264,8 +304,8 @@ section {
   justify-content: space-between;
   border-radius: var(--r-pill);
   background: rgba(8, 12, 28, 0.60);
-  backdrop-filter: blur(44px) saturate(220%) brightness(1.05);
-  -webkit-backdrop-filter: blur(44px) saturate(220%) brightness(1.05);
+  backdrop-filter: blur(52px) saturate(220%) brightness(1.06);
+  -webkit-backdrop-filter: blur(52px) saturate(220%) brightness(1.06);
   border: 1px solid var(--glass-border);
   box-shadow: var(--glass-inset), 0 12px 40px -20px rgba(0,0,0,0.7);
 }
@@ -414,9 +454,12 @@ section {
   position: fixed;
   inset: 0;
   z-index: 49;
-  background: rgba(5, 7, 13, 0.90);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 10%, rgba(37,99,235,0.22) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 40% at 80% 85%, rgba(167,139,250,0.15) 0%, transparent 55%),
+    rgba(5, 7, 15, 0.92);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
   padding: 100px 28px 28px;
   opacity: 0;
   transform: translateY(-8px);
@@ -435,10 +478,15 @@ section {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  counter-reset: mobile-nav;
 }
 
+.mobile-menu li { counter-increment: mobile-nav; }
+
 .mobile-menu a {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 14px;
   padding: 16px 20px;
   font-size: 22px;
   font-weight: 600;
@@ -446,12 +494,29 @@ section {
   color: var(--text-2);
   text-decoration: none;
   border-radius: var(--r-md);
-  transition: color 0.2s, background 0.2s;
+  transition: color 0.2s, background 0.2s, box-shadow 0.2s;
+}
+
+/* Numeración automática — da identidad de tech product */
+.mobile-menu a::before {
+  content: "0" counter(mobile-nav);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--text-4);
+  flex-shrink: 0;
+  transition: color 0.2s;
 }
 
 .mobile-menu a:hover {
   color: var(--text);
   background: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 3px 0 0 var(--brand-soft);
+}
+
+.mobile-menu a:hover::before {
+  color: var(--brand-soft);
 }
 
 @media (max-width: 900px) {
@@ -578,6 +643,23 @@ section {
   width: 100%;
 }
 
+/* Halo de luz detrás del copy del hero — no requiere backdrop-filter */
+.hero-copy {
+  position: relative;
+  z-index: 1;
+}
+.hero-copy::before {
+  content: "";
+  position: absolute;
+  inset: -50% -30%;
+  background:
+    radial-gradient(ellipse 55% 45% at 30% 40%, rgba(37,99,235,0.18) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 35% at 78% 65%, rgba(167,139,250,0.12) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: -1;
+  filter: blur(35px);
+}
+
 .hero-eyebrow {
   display: inline-flex;
   align-items: center;
@@ -621,6 +703,26 @@ h1.hero-title .accent-word {
   -webkit-text-fill-color: transparent;
   font-style: italic;
   font-weight: 600;
+  position: relative;
+  display: inline-block;
+}
+
+h1.hero-title .accent-word::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #6ba3ff, #a78bfa, #f59e0b);
+  border-radius: 2px;
+  opacity: 0.55;
+  animation: accent-line 3s ease-in-out infinite alternate;
+  transform-origin: center;
+}
+
+@keyframes accent-line {
+  from { opacity: 0.35; transform: scaleX(0.88); }
+  to   { opacity: 0.65; transform: scaleX(1.00); }
 }
 
 .hero-sub {
@@ -642,9 +744,10 @@ h1.hero-title .accent-word {
   margin-top: 36px;
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 12px;
   color: var(--text-3);
   font-size: 13px;
+  flex-wrap: wrap;
 }
 
 .dot {
@@ -1075,7 +1178,7 @@ h2.section-title {
 }
 
 .section-title .accent-word {
-  background: linear-gradient(135deg, #6ba3ff 0%, #a78bfa 100%);
+  background: linear-gradient(135deg, #6ba3ff 0%, #a78bfa 65%, #f59e0b 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -1093,6 +1196,12 @@ h2.section-title {
 .section-head {
   margin-bottom: 64px;
 }
+
+/* Identidad de color por sección — cada sección tiene su acento */
+#features .section-eyebrow { color: var(--accent-2); }
+#features .section-eyebrow-dot { background: var(--accent-2); box-shadow: 0 0 10px var(--accent-2); }
+#tech .section-eyebrow { color: var(--moto); }
+#tech .section-eyebrow-dot { background: var(--moto); box-shadow: 0 0 10px var(--moto); }
 
 /* ============================================================
    Scroll entrance animations
@@ -1131,7 +1240,7 @@ h2.section-title {
   font-size: 36px;
   font-weight: 700;
   letter-spacing: -0.03em;
-  background: linear-gradient(180deg, #fff, #b7c2d6);
+  background: linear-gradient(145deg, #93c5fd 0%, #a78bfa 55%, #fbbf24 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -1250,7 +1359,10 @@ h2.section-title {
   grid-row: span 2;
   min-height: 600px;
   padding: 36px;
-  background: linear-gradient(160deg, rgba(37,99,235,0.18), rgba(167,139,250,0.10));
+  background:
+    radial-gradient(ellipse 60% 50% at 88% 88%, rgba(245,158,11,0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 55% 45% at 10% 15%, rgba(37,99,235,0.22) 0%, transparent 60%),
+    linear-gradient(160deg, rgba(37,99,235,0.15), rgba(167,139,250,0.08));
 }
 
 .feature-icon {
@@ -2123,8 +2235,11 @@ h2.section-title {
    ============================================================ */
 footer {
   padding: 60px 0 40px;
-  border-top: 1px solid var(--glass-border);
+  border-top: 1px solid transparent;
   margin-top: 40px;
+  background-image: linear-gradient(var(--bg-0), var(--bg-0)), linear-gradient(90deg, transparent 0%, rgba(107,163,255,0.30) 30%, rgba(167,139,250,0.25) 60%, transparent 100%);
+  background-clip: padding-box, border-box;
+  background-origin: padding-box, border-box;
 }
 
 .footer-grid {
@@ -2192,15 +2307,18 @@ footer {
   width: 44px;
   height: 44px;
   border-radius: var(--r-pill);
-  background: rgba(10, 15, 30, 0.75);
-  backdrop-filter: blur(16px) saturate(160%);
-  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  background: rgba(10, 15, 30, 0.82);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid var(--glass-border-strong);
   color: var(--text);
   cursor: pointer;
   display: grid;
   place-items: center;
-  box-shadow: var(--glass-inset), 0 8px 24px -8px rgba(0, 0, 0, 0.6);
+  box-shadow:
+    inset 0 1.5px 0 rgba(255,255,255,0.35),
+    0 8px 24px -8px rgba(37,99,235,0.4),
+    0 4px 12px -4px rgba(0,0,0,0.5);
   opacity: 0;
   transform: scale(0.8);
   transition: opacity 0.25s ease, transform 0.25s ease;
@@ -2214,9 +2332,13 @@ footer {
 }
 
 .scroll-top-btn:hover {
-  background: rgba(37, 99, 235, 0.25);
-  border-color: rgba(107, 163, 255, 0.4);
-  transform: scale(1.05);
+  background: rgba(37, 99, 235, 0.30);
+  border-color: rgba(107, 163, 255, 0.45);
+  transform: scale(1.08);
+  box-shadow:
+    inset 0 1.5px 0 rgba(255,255,255,0.35),
+    0 12px 30px -8px rgba(37,99,235,0.55),
+    0 4px 12px -4px rgba(0,0,0,0.4);
 }
 
 /* ============================================================
@@ -2258,8 +2380,71 @@ footer {
   .alert-stage { min-height: 360px; }
 }
 
-@media (max-width: 640px) {
+/* ============================================================
+   Performance móvil — eliminar operaciones GPU costosas
+   backdrop-filter es el principal asesino de FPS en móvil
+   ============================================================ */
+@media (max-width: 768px) {
   .scroll-top-btn { bottom: 20px; right: 16px; width: 40px; height: 40px; }
+  /* 1. Matar backdrop-filter en todas las tarjetas glass
+        Reemplazado por fondo sólido con brand tint — el specular ::before mantiene el look glass */
+  .glass {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    /* Fondo con tinte de marca sutil — el ::before specular hace el resto */
+    background: linear-gradient(145deg, rgba(37,99,235,0.09) 0%, rgba(10,15,35,0.93) 45%);
+  }
+  .glass-strong {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: linear-gradient(145deg, rgba(37,99,235,0.12) 0%, rgba(12,18,42,0.96) 45%);
+  }
+  /* Nav conserva blur reducido — es pequeño y visible siempre */
+  .nav {
+    backdrop-filter: blur(16px) saturate(160%) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(160%) !important;
+    background: rgba(6, 10, 24, 0.82) !important;
+  }
+  .floating-card {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(10, 16, 38, 0.90);
+  }
+  .mobile-menu {
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+  }
+  .scroll-top-btn {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(10, 15, 35, 0.90) !important;
+  }
+
+  /* 2. Parar la segunda capa de aurora (la más costosa con filter) */
+  .bg-aurora::before { display: none; }
+
+  /* 3. Simplificar aurora — solo transform (GPU-compositable),
+        quitar filter: hue-rotate() que fuerza rasterización */
+  .bg-aurora {
+    inset: -5%;
+    animation: aurora-drift-mobile 35s ease-in-out infinite alternate;
+  }
+
+  /* 4. Parar animaciones de floating cards en mobile — no se ven */
+  .floating-card.fc-1,
+  .floating-card.fc-2 { animation: none; }
+
+  /* 5. Orbes del hero — reducir blur, son costosos con filter */
+  .orb { filter: blur(50px); }
+
+  /* 6. Deshabilitar glow del hero-copy en móvil (filter: blur cuesta GPU) */
+  .hero-copy::before { display: none; }
+}
+
+@keyframes aurora-drift-mobile {
+  0%   { transform: translate3d(0,    0,   0) scale(1);    }
+  50%  { transform: translate3d(-3%,  2%,  0) scale(1.05); }
+  100% { transform: translate3d(3%,  -2%,  0) scale(1);    }
 }
 
 @media (max-width: 640px) {
@@ -2273,19 +2458,39 @@ footer {
   .brand-mark img { width: 100%; height: 100%; }
   .nav-cta .btn { padding: 9px 14px; font-size: 13px; min-height: 38px; }
 
-  /* Hero */
+  /* CTA principal — más prominente en móvil */
+  .btn-primary {
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.35),
+      inset 0 -1px 0 rgba(0,0,0,0.2),
+      0 14px 36px -6px rgba(99,102,241,0.75),
+      0 4px 10px -2px rgba(37,99,235,0.5);
+  }
+
+  /* Hero — diseñado específicamente para móvil */
   .hero { padding: 28px 0 56px; }
   .hero-grid { gap: 40px; }
+  /* Centrado intencional — feel de App Store / iOS */
+  .hero-copy { text-align: center; }
+  .hero-sub { text-align: left; margin-left: auto; margin-right: auto; }
   .hero-eyebrow { font-size: 12px; padding: 6px 12px 6px 6px; margin-bottom: 22px; }
   .hero-eyebrow-pill { font-size: 10px; padding: 2px 8px; }
   h1.hero-title { font-size: clamp(34px, 9vw, 52px); letter-spacing: -0.03em; line-height: 1.0; }
   .hero-sub { font-size: 16px; margin-top: 20px; }
   .hero-ctas { flex-direction: column; align-items: stretch; gap: 10px; margin-top: 28px; }
   .hero-ctas .btn { justify-content: center; padding: 14px 20px; font-size: 14px; min-height: 48px; }
-  .hero-meta { flex-wrap: wrap; gap: 10px; font-size: 12px; margin-top: 28px; }
+  .hero-meta { flex-wrap: wrap; gap: 10px; font-size: 12px; margin-top: 28px; justify-content: center; }
 
-  /* Phone mockup — reducido y sin tilt 3D */
-  .phone { width: 260px; height: 540px; transform: none; border-radius: 44px; padding: 8px; }
+  /* Phone mockup — reducido, sin tilt 3D, con glow de marca más dramático */
+  .phone {
+    width: 260px; height: 540px; transform: none; border-radius: 44px; padding: 8px;
+    box-shadow:
+      inset 0 0 0 1.5px rgba(255,255,255,0.14),
+      inset 0 2px 0 rgba(255,255,255,0.26),
+      0 50px 100px -20px rgba(0,0,0,0.85),
+      0 24px 64px -16px rgba(37,99,235,0.70),
+      0 0 80px -10px rgba(139,92,246,0.35);
+  }
   .phone-screen { border-radius: 38px; }
   .phone-notch { width: 92px; height: 26px; top: 11px; }
   .phone-status { top: 14px; left: 22px; right: 22px; font-size: 12px; }
@@ -2386,15 +2591,9 @@ footer {
   /* Touch targets mínimos */
   a, button { min-height: 36px; }
 
-  /* Bajar coste de blur en móvil — mantener look, reducir GPU */
-  .glass { backdrop-filter: blur(22px) saturate(190%) brightness(1.05); -webkit-backdrop-filter: blur(22px) saturate(190%) brightness(1.05); }
-  .glass-strong { backdrop-filter: blur(28px) saturate(200%) brightness(1.06); -webkit-backdrop-filter: blur(28px) saturate(200%) brightness(1.06); }
-  .nav { backdrop-filter: blur(26px) saturate(200%) brightness(1.04); -webkit-backdrop-filter: blur(26px) saturate(200%) brightness(1.04); }
-  .floating-card { backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); }
-
-  /* Ocultar elementos puramente decorativos costosos */
+  /* Ocultar decorativos costosos */
   .bg-noise { display: none; }
-  .bg-grid { background-size: 48px 48px; opacity: 0.5; }
+  .bg-grid { background-size: 48px 48px; opacity: 0.4; }
 }
 
 /* Pantallas muy pequeñas */

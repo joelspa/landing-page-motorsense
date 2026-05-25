@@ -79,7 +79,7 @@
           <span>Proyecto presentado en Udinnova · v1.0</span>
         </div>
         <h1 class="hero-title">
-          Tu mecánico de bolsillo, <span class="accent-word">siempre listo.</span>
+          Tu mecánico de bolsillo,<br/><span class="accent-word">siempre listo.</span>
         </h1>
         <p class="hero-sub">
           Describe los síntomas de tu vehículo y MotorSense analiza, prioriza y te lleva al taller correcto. Diagnóstico orientativo por IA, talleres cercanos en el mapa y un Modo Conducción que llama por ti si tienes un accidente en carretera.
@@ -600,7 +600,7 @@
       <div>
         <div class="brand-showcase-wrap">
           <div class="brand-showcase">
-            <img src="logo.png" alt="MotorSense" />
+            <img src="logo.png" alt="MotorSense" loading="lazy" />
           </div>
         </div>
         <span class="booth-eyebrow">Proyecto de Udinnova</span>
@@ -618,7 +618,7 @@
         <span class="qr-corner bl"></span>
         <span class="qr-corner br"></span>
         <span class="qr-scan-line"></span>
-        <img src="qr.svg" alt="QR del repositorio en GitHub" width="188" height="188" style="display:block;width:100%;height:100%;border-radius:8px;"/>
+        <img src="qr.svg" alt="QR del repositorio en GitHub" width="188" height="188" loading="lazy" style="display:block;width:100%;height:100%;border-radius:8px;"/>
       </a>
     </div>
   </div>
@@ -693,26 +693,34 @@
     }, 1000);
   }
 
-  // ── Barra de progreso de scroll ──────────────────────────────
+  // ── Scroll handlers unificados en un único rAF ───────────────
+  // Evita múltiples listeners disparando en cada pixel de scroll
   const scrollProgress = document.querySelector('.scroll-progress');
-  if (scrollProgress) {
-    function updateScrollProgress() {
-      const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-      scrollProgress.style.width = (scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0) + '%';
-    }
-    document.addEventListener('scroll', updateScrollProgress, { passive: true });
-  }
+  const scrollTopBtn   = document.querySelector('.scroll-top-btn');
 
-  // ── Botón scroll-to-top ──────────────────────────────────────
-  const scrollTopBtn = document.querySelector('.scroll-top-btn');
   if (scrollTopBtn) {
-    function updateScrollTopBtn() {
-      scrollTopBtn.classList.toggle('visible', (window.scrollY || document.documentElement.scrollTop) > 400);
-    }
-    document.addEventListener('scroll', updateScrollTopBtn, { passive: true });
     scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
   }
+
+  let rafScrollPending = false;
+  function onScroll() {
+    if (rafScrollPending) return;
+    rafScrollPending = true;
+    requestAnimationFrame(() => {
+      const scrollTop    = document.documentElement.scrollTop || document.body.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+
+      if (scrollProgress) {
+        scrollProgress.style.width = (scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0) + '%';
+      }
+      if (scrollTopBtn) {
+        scrollTopBtn.classList.toggle('visible', scrollTop > 400);
+      }
+
+      rafScrollPending = false;
+    });
+  }
+  document.addEventListener('scroll', onScroll, { passive: true });
 
   // ── Nav activo por sección ───────────────────────────────────
   (function () {
