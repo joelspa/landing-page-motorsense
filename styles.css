@@ -22,17 +22,17 @@
 
   /* Texto */
   --text: #EAF1FF;
-  --text-2: #B7C2D6;
-  --text-3: #7A8AA6;
-  --text-4: #4d5a75;
+  --text-2: #D8E2F3; /* Aumentado de #B7C2D6 para mayor legibilidad */
+  --text-3: #A3B8D9; /* Aumentado de #7A8AA6 para contraste WCAG AA */
+  --text-4: #7A8FA3; /* Aumentado de #4d5a75 para pie de página y deslindes */
 
   /* Cristal */
-  --glass-bg: rgba(255, 255, 255, 0.07);
-  --glass-bg-strong: rgba(255, 255, 255, 0.12);
-  --glass-border: rgba(255, 255, 255, 0.16);
-  --glass-border-strong: rgba(255, 255, 255, 0.28);
-  --glass-shine: rgba(255, 255, 255, 0.48);
-  --glass-inset: inset 0 2px 0 rgba(255, 255, 255, 0.52), inset 0 -1px 0 rgba(255, 255, 255, 0.06), inset 1px 0 0 rgba(255, 255, 255, 0.14), inset -1px 0 0 rgba(255, 255, 255, 0.08);
+  --glass-bg: rgba(255, 255, 255, 0.04); /* Suavizado de 0.07 */
+  --glass-bg-strong: rgba(255, 255, 255, 0.09); /* Suavizado de 0.12 */
+  --glass-border: rgba(255, 255, 255, 0.14);
+  --glass-border-strong: rgba(255, 255, 255, 0.24);
+  --glass-shine: rgba(255, 255, 255, 0.38);
+  --glass-inset: inset 0 1.5px 0 rgba(255,255,255,0.28), inset 0 -1px 0 rgba(255,255,255,0.04), inset 1px 0 0 rgba(255,255,255,0.07), inset -1px 0 0 rgba(255,255,255,0.05);
 
   /* Radios */
   --r-sm: 12px;
@@ -165,18 +165,15 @@ body {
    Cristal base
    ============================================================ */
 .glass {
-  background: var(--glass-bg);
-  backdrop-filter: blur(56px) saturate(220%) brightness(1.08);
-  -webkit-backdrop-filter: blur(56px) saturate(220%) brightness(1.08);
-  border: 1px solid var(--glass-border);
-  box-shadow:
-    var(--glass-inset),
-    0 24px 60px -20px rgba(0, 0, 0, 0.55),
-    0 8px 20px -8px rgba(0, 0, 0, 0.35);
-  border-radius: var(--r-lg);
+  background: rgba(10, 15, 30, 0.45);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  border-radius: 24px;
   position: relative;
   overflow: hidden;
-  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.3s, box-shadow 0.3s;
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.3s, border-color 0.3s, box-shadow 0.3s;
 }
 
 .glass.glass-hover:hover,
@@ -184,11 +181,27 @@ body {
 .step-card:hover,
 .tech-card:hover {
   transform: translateY(-6px);
-  border-color: var(--glass-border-strong);
-  box-shadow:
-    var(--glass-inset),
-    0 36px 90px -20px rgba(37, 99, 235, 0.40),
-    0 16px 40px -10px rgba(0, 0, 0, 0.45);
+  background: rgba(15, 22, 42, 0.55);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px 0 rgba(31, 64, 135, 0.20);
+}
+
+/* Tech hover identity — cada stack con su glow de color de marca */
+.tech-card[data-tech="react"]:hover {
+  box-shadow: 0 8px 32px 0 rgba(97, 218, 251, 0.20);
+  border-color: rgba(97, 218, 251, 0.22);
+}
+.tech-card[data-tech="expo"]:hover {
+  box-shadow: 0 8px 32px 0 rgba(255, 255, 255, 0.10);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+.tech-card[data-tech="ollama"]:hover {
+  box-shadow: 0 8px 32px 0 rgba(245, 158, 11, 0.22);
+  border-color: rgba(245, 158, 11, 0.20);
+}
+.tech-card[data-tech="leaflet"]:hover {
+  box-shadow: 0 8px 32px 0 rgba(34, 197, 94, 0.22);
+  border-color: rgba(34, 197, 94, 0.20);
 }
 
 /* Touch active states — feedback táctil para móvil */
@@ -229,24 +242,24 @@ body {
   pointer-events: none;
   background:
     /* spot especular primario — esquina superior izquierda (firma Apple) */
-    radial-gradient(ellipse 80% 35% at 15% -5%, rgba(255,255,255,0.42) 0%, transparent 65%),
+    radial-gradient(ellipse 80% 35% at 15% -5%, rgba(255,255,255,0.18) 0%, transparent 65%),
     /* reflejo secundario suave — esquina inferior derecha */
-    radial-gradient(ellipse 55% 25% at 88% 108%, rgba(255,255,255,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 55% 25% at 88% 108%, rgba(255,255,255,0.05) 0%, transparent 60%),
     /* sheen diagonal — simula el ángulo del cristal */
     linear-gradient(145deg,
-      rgba(255,255,255,0.16) 0%,
-      rgba(255,255,255,0.05) 30%,
+      rgba(255,255,255,0.08) 0%,
+      rgba(255,255,255,0.02) 30%,
       transparent 55%,
-      rgba(255,255,255,0.03) 80%,
-      rgba(255,255,255,0.07) 100%
+      rgba(255,255,255,0.01) 80%,
+      rgba(255,255,255,0.03) 100%
     );
 }
 
 .glass-strong {
-  background: var(--glass-bg-strong);
-  backdrop-filter: blur(72px) saturate(250%) brightness(1.10);
-  -webkit-backdrop-filter: blur(72px) saturate(250%) brightness(1.10);
-  border: 1px solid var(--glass-border-strong);
+  background: rgba(10, 15, 30, 0.60);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 /* Reflejo de luz — highlight iridiscente superior (liquid glass signature) */
@@ -258,11 +271,11 @@ body {
   pointer-events: none;
   background:
     /* corona luminosa centrada en el borde superior */
-    radial-gradient(ellipse 110% 55% at 50% -8%, rgba(255,255,255,0.32) 0%, transparent 62%),
+    radial-gradient(ellipse 110% 55% at 50% -8%, rgba(255,255,255,0.12) 0%, transparent 62%),
     /* hot spot izquierdo — simula luz puntual */
-    radial-gradient(ellipse 55% 35% at 15% 0%, rgba(255,255,255,0.28) 0%, transparent 58%),
+    radial-gradient(ellipse 55% 35% at 15% 0%, rgba(255,255,255,0.09) 0%, transparent 58%),
     /* gradiente suave horizontal */
-    linear-gradient(180deg, rgba(255,255,255,0.09) 0%, transparent 45%);
+    linear-gradient(180deg, rgba(255,255,255,0.04) 0%, transparent 45%);
 }
 
 /* ============================================================
@@ -691,7 +704,7 @@ h1.hero-title {
   font-size: clamp(48px, 6vw, 84px);
   font-weight: 700;
   letter-spacing: -0.035em;
-  line-height: 0.98;
+  line-height: 1.12; /* Aumentado de 0.98 para prevenir recorte de degradado en las letras superiores e inferiores */
   color: var(--text);
   text-wrap: balance;
 }
@@ -701,10 +714,13 @@ h1.hero-title .accent-word {
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone; /* Permite que el degradado se aplique correctamente si el texto se divide */
   font-style: italic;
   font-weight: 600;
   position: relative;
-  display: inline-block;
+  display: inline-block; /* Se mantiene inline-block en pantallas grandes y se cambia a inline en móviles */
+  padding: 0.04em 0; /* Padding preventivo para descender/ascender de letras */
 }
 
 h1.hero-title .accent-word::after {
@@ -1172,7 +1188,7 @@ h2.section-title {
   font-size: clamp(36px, 4.5vw, 60px);
   font-weight: 700;
   letter-spacing: -0.03em;
-  line-height: 1.02;
+  line-height: 1.15; /* Aumentado de 1.02 para evitar cortes de degradado superior/inferior */
   text-wrap: balance;
   max-width: 900px;
 }
@@ -1182,8 +1198,11 @@ h2.section-title {
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone; /* Copia la decoración del fondo al salto de línea */
   font-style: italic;
   font-weight: 600;
+  padding: 0.04em 0; /* Padding preventivo para descender/ascender de letras */
 }
 
 .section-sub {
@@ -1228,6 +1247,10 @@ h2.section-title {
   grid-template-columns: repeat(4, 1fr);
   gap: 0;
   padding: 28px 36px;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .stat {
@@ -1363,6 +1386,15 @@ h2.section-title {
     radial-gradient(ellipse 60% 50% at 88% 88%, rgba(245,158,11,0.18) 0%, transparent 60%),
     radial-gradient(ellipse 55% 45% at 10% 15%, rgba(37,99,235,0.22) 0%, transparent 60%),
     linear-gradient(160deg, rgba(37,99,235,0.15), rgba(167,139,250,0.08));
+  box-shadow:
+    var(--glass-inset),
+    0 0 90px -10px rgba(245, 158, 11, 0.22),
+    -30px -20px 90px -30px rgba(37, 99, 235, 0.18),
+    0 40px 100px -20px rgba(0, 0, 0, 0.50);
+}
+
+.feature-card.feature-hero:hover {
+  box-shadow: 0 8px 32px 0 rgba(245, 158, 11, 0.18), 0 8px 32px 0 rgba(31, 64, 135, 0.20);
 }
 
 .feature-icon {
@@ -1737,8 +1769,15 @@ h2.section-title {
     radial-gradient(80% 100% at 0%   100%, rgba(220, 38,  38,  0.30), transparent 65%),
     radial-gradient(50% 60% at 50%   50%,  rgba(139, 92,  246, 0.18), transparent 70%),
     linear-gradient(160deg, rgba(14,10,38,0.85) 0%, rgba(26,10,46,0.90) 100%);
-  backdrop-filter: blur(2px);
-  border: 1px solid rgba(167, 139, 250, 0.28);
+  backdrop-filter: blur(32px) saturate(200%) brightness(1.04);
+  -webkit-backdrop-filter: blur(32px) saturate(200%) brightness(1.04);
+  border: 1px solid rgba(167, 139, 250, 0.30);
+  box-shadow:
+    inset 0 2px 0 rgba(167, 139, 250, 0.38),
+    inset 0 -1px 0 rgba(220, 38, 38, 0.08),
+    0 40px 100px -30px rgba(167, 139, 250, 0.28),
+    0 0 100px -20px rgba(220, 38, 38, 0.18),
+    0 20px 60px -20px rgba(0, 0, 0, 0.55);
   border-radius: var(--r-xl);
   display: grid;
   grid-template-columns: 1.05fr 0.95fr;
@@ -1779,9 +1818,20 @@ h2.section-title {
   font-size: clamp(34px, 4vw, 52px);
   font-weight: 700;
   letter-spacing: -0.03em;
-  line-height: 1.03;
+  line-height: 1.15; /* Aumentado de 1.03 para prevenir cortes de degradado en letras */
   color: white;
   text-wrap: balance;
+}
+
+.moto-accent {
+  background: linear-gradient(135deg, #a78bfa, #f59e0b);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone; /* Copia el degradado correctamente en saltos de línea */
+  display: inline;
+  padding: 0.04em 0; /* Padding preventivo para descender/ascender de letras */
 }
 
 .moto-desc {
@@ -2089,7 +2139,7 @@ h2.section-title {
   font-size: clamp(28px, 3.5vw, 42px);
   font-weight: 700;
   letter-spacing: -0.025em;
-  line-height: 1.05;
+  line-height: 1.15; /* Aumentado de 1.05 para evitar cortes tipográficos en letras con acentos */
   color: white;
   text-wrap: balance;
 }
@@ -2203,7 +2253,7 @@ h2.section-title {
   font-size: clamp(40px, 5vw, 64px);
   font-weight: 700;
   letter-spacing: -0.035em;
-  line-height: 1;
+  line-height: 1.15; /* Aumentado de 1 para evitar cortes tipográficos en letras con acentos */
   color: white;
   text-wrap: balance;
 }
@@ -2391,13 +2441,13 @@ footer {
   .glass {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
-    /* Fondo con tinte de marca sutil — el ::before specular hace el resto */
-    background: linear-gradient(145deg, rgba(37,99,235,0.09) 0%, rgba(10,15,35,0.93) 45%);
+    /* Modelo nav: panel oscuro + brand tint — specular ::before mantiene el look glass */
+    background: linear-gradient(145deg, rgba(37,99,235,0.12) 0%, rgba(8,12,28,0.82) 45%);
   }
   .glass-strong {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
-    background: linear-gradient(145deg, rgba(37,99,235,0.12) 0%, rgba(12,18,42,0.96) 45%);
+    background: linear-gradient(145deg, rgba(37,99,235,0.12) 0%, rgba(8,12,28,0.96) 45%);
   }
   /* Nav conserva blur reducido — es pequeño y visible siempre */
   .nav {
@@ -2418,6 +2468,12 @@ footer {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
     background: rgba(10, 15, 35, 0.90) !important;
+  }
+
+  /* Moto-card en móvil — blur reducido pero mantiene glassmorphism */
+  .moto-card {
+    backdrop-filter: blur(14px) saturate(160%) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(160%) !important;
   }
 
   /* 2. Parar la segunda capa de aurora (la más costosa con filter) */
@@ -2448,6 +2504,7 @@ footer {
 }
 
 @media (max-width: 640px) {
+  .hide-mobile { display: none !important; }
   section { padding: 56px 0; }
   .container { padding: 0 18px; }
 
@@ -2475,7 +2532,8 @@ footer {
   .hero-sub { text-align: left; margin-left: auto; margin-right: auto; }
   .hero-eyebrow { font-size: 12px; padding: 6px 12px 6px 6px; margin-bottom: 22px; }
   .hero-eyebrow-pill { font-size: 10px; padding: 2px 8px; }
-  h1.hero-title { font-size: clamp(34px, 9vw, 52px); letter-spacing: -0.03em; line-height: 1.0; }
+  h1.hero-title { font-size: clamp(34px, 9vw, 52px); letter-spacing: -0.03em; line-height: 1.15; }
+  h1.hero-title .accent-word { display: inline; }
   .hero-sub { font-size: 16px; margin-top: 20px; }
   .hero-ctas { flex-direction: column; align-items: stretch; gap: 10px; margin-top: 28px; }
   .hero-ctas .btn { justify-content: center; padding: 14px 20px; font-size: 14px; min-height: 48px; }
